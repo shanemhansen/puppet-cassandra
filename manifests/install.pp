@@ -1,17 +1,7 @@
 class cassandra::install {
-    package { 'dsc':
+    package { 'cassandra':
         ensure => $cassandra::version,
         name   => $cassandra::package_name,
-    }
-
-    $python_cql_name = $::osfamily ? {
-        'Debian'    => 'python-cql',
-        'RedHat'    => 'python26-cql',
-        default     => 'python-cql',
-    }
-
-    package { $python_cql_name:
-        ensure => installed,
     }
 
     if ($::osfamily == 'Debian') {
@@ -29,7 +19,7 @@ class cassandra::install {
             creates => '/etc/cassandra/CASSANDRA-2356',
             user    => 'root',
             require => [
-                    Package['dsc'],
+                    Package['cassandra'],
                     File['CASSANDRA-2356 /etc/cassandra'],
                 ],
         }

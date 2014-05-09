@@ -31,6 +31,10 @@ class cassandra::config(
     $internode_compression,
     $disk_failure_policy,
     $thread_stack_size,
+    $file_cache_size_in_mb,
+    $java_home,
+    $tombstone_warn_threshold,
+    $tombstone_failure_threshold
 ) {
     group { 'cassandra':
         ensure  => present,
@@ -52,7 +56,7 @@ class cassandra::config(
     file { $data_file_directories:
         ensure  => directory,
     }
-
+    
     file { "${config_path}/cassandra-env.sh":
         ensure  => file,
         content => template("${module_name}/cassandra-env.sh.erb"),

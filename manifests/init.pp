@@ -3,15 +3,6 @@ class cassandra(
     $version                    = $cassandra::params::version,
     $service_name               = $cassandra::params::service_name,
     $config_path                = $cassandra::params::config_path,
-    $include_repo               = $cassandra::params::include_repo,
-    $repo_name                  = $cassandra::params::repo_name,
-    $repo_baseurl               = $cassandra::params::repo_baseurl,
-    $repo_gpgkey                = $cassandra::params::repo_gpgkey,
-    $repo_repos                 = $cassandra::params::repo_repos,
-    $repo_release               = $cassandra::params::repo_release,
-    $repo_pin                   = $cassandra::params::repo_pin,
-    $repo_gpgcheck              = $cassandra::params::repo_gpgcheck,
-    $repo_enabled               = $cassandra::params::repo_enabled,
     $max_heap_size              = $cassandra::params::max_heap_size,
     $heap_newsize               = $cassandra::params::heap_newsize,
     $jmx_port                   = $cassandra::params::jmx_port,
@@ -44,10 +35,13 @@ class cassandra(
     $disk_failure_policy        = $cassandra::params::disk_failure_policy,
     $thread_stack_size          = $cassandra::params::thread_stack_size,
     $service_enable             = $cassandra::params::service_enable,
-    $service_ensure             = $cassandra::params::service_ensure
+    $service_ensure             = $cassandra::params::service_ensure,
+    $file_cache_size_in_mb      = $cassandra::params::file_cache_size_in_mb,
+    $java_home                  = $cassandra::params::java_home,
+    $tombstone_warn_threshold= $cassandra::params::tombstone_warn_threshold,
+    $tombstone_failure_threshold= $cassandra::params::tombstone_failure_threshold,
 ) inherits cassandra::params {
     # Validate input parameters
-    validate_bool($include_repo)
 
     validate_absolute_path($commitlog_directory)
     validate_absolute_path($saved_caches_directory)
@@ -72,12 +66,23 @@ class cassandra(
     validate_re("${thread_stack_size}", '^[0-9]+$')
     validate_re($service_enable, '^(true|false)$')
     validate_re($service_ensure, '^(running|stopped)$')
-
+    
     validate_array($additional_jvm_opts)
     validate_array($seeds)
     validate_array($data_file_directories)
-
-    if(!is_integer($jmx_port)) {
+    if(!is_integer($tombstone_warn_threshold)) {
+        fail('tombstone_warn_threshold must be int')
+    }
+    if(!is_integer($tombstone_failure_threshold)) {
+        fail('tombstone_failure_threshold must be int')
+    }
+    if(!is_integer($file_cache_size_in_mb)) {
+        fail('file_cache_size must be a number, setting to 0')
+    }
+    if(empty($java_home)) {
+        fail('java_home must be defined')
+    }
+    if(!is_integer($jmx_port)) {    
         fail('jmx_port must be a port number between 1 and 65535')
     }
 
@@ -120,19 +125,6 @@ class cassandra(
     # Anchors for containing the implementation class
     anchor { 'cassandra::begin': }
 
-    if($include_repo) {
-        class { 'cassandra::repo':
-            repo_name => $repo_name,
-            baseurl   => $repo_baseurl,
-            gpgkey    => $repo_gpgkey,
-            repos     => $repo_repos,
-            release   => $repo_release,
-            pin       => $repo_pin,
-            gpgcheck  => $repo_gpgcheck,
-            enabled   => $repo_enabled,
-        }
-        Class['cassandra::repo'] -> Class['cassandra::install']
-    }
 
     include cassandra::install
 
@@ -169,6 +161,10 @@ class cassandra(
         internode_compression      => $internode_compression,
         disk_failure_policy        => $disk_failure_policy,
         thread_stack_size          => $thread_stack_size,
+	file_cache_size_in_mb      => $file_cache_size_in_mb,
+	java_home                  => $java_home,
+	tombstone_warn_threshold=> $tombstone_warn_threshold,
+	tombstone_failure_threshold=> $tombstone_failure_threshold,
     }
 
     class { 'cassandra::service':

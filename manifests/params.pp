@@ -1,61 +1,8 @@
 class cassandra::params {
-    $include_repo = $::cassandra_include_repo ? {
-        undef   => true,
-        default => $::cassandra_include_repo
-    }
-
-    $repo_name = $::cassandra_repo_name ? {
-        undef   => 'datastax',
-        default => $::cassandra_repo_name
-    }
-
-    $repo_baseurl = $::cassandra_repo_baseurl ? {
-        undef   => $::osfamily ? {
-            'Debian' => 'http://debian.datastax.com/community',
-            'RedHat' => 'http://rpm.datastax.com/community/',
-            default  => undef,
-        },
-        default => $::cassandra_repo_baseurl
-    }
-
-    $repo_gpgkey = $::cassandra_repo_gpgkey ? {
-        undef   => $::osfamily ? {
-            'Debian' => 'http://debian.datastax.com/debian/repo_key',
-            'RedHat' => 'http://rpm.datastax.com/rpm/repo_key',
-            default  => undef,
-        },
-        default => $::cassandra_repo_gpgkey
-    }
-
-    $repo_repos = $::cassandra_repo_repos ? {
-        undef   => 'main',
-        default => $::cassandra_repo_release
-    }
-
-    $repo_release = $::cassandra_repo_release ? {
-        undef   => 'stable',
-        default => $::cassandra_repo_release
-    }
-
-    $repo_pin = $::cassandra_repo_pin ? {
-        undef   => 200,
-        default => $::cassandra_repo_release
-    }
-
-    $repo_gpgcheck = $::cassandra_repo_gpgcheck ? {
-        undef   => 0,
-        default => $::cassandra_repo_gpgcheck
-    }
-
-    $repo_enabled = $::cassandra_repo_enabled ? {
-        undef   => 1,
-        default => $::cassandra_repo_enabled
-    }
-
     case $::osfamily {
         'Debian': {
             $package_name = $::cassandra_package_name ? {
-                undef   => 'dsc12',
+                undef   => 'cassandra',
                 default => $::cassandra_package_name,
             }
 
@@ -71,7 +18,7 @@ class cassandra::params {
         }
         'RedHat': {
             $package_name = $::cassandra_package_name ? {
-                undef   => 'dsc12',
+                undef   => 'cassandra',
                 default => $::cassandra_package_name,
             }
 
@@ -109,6 +56,16 @@ class cassandra::params {
         undef   => 7199,
         default => $::cassandra_jmx_port,
     }
+    $file_cache_size_in_mb = $::cassandra_file_cache_size_in_mb ? {
+        undef => 512,
+        default=>$::cassandra_file_cache_size_in_mb,
+    }
+    $java_home = $::java_home ? {
+        undef => "/usr/lib/jvm",
+        default=>$::java_home,
+    }
+    $tombstone_warn_threshold = $::tombstone_warn_threshold ? { undef => 10000, default=>$::tombstone_warn_threshold}
+    $tombstone_failure_threshold = $::tombstone_failure_threshold ? { undef => 100000, default=>$::tombstone_failure_threshold}
 
     $additional_jvm_opts = $::cassandra_additional_jvm_opts ? {
         undef   => [],
@@ -248,7 +205,7 @@ class cassandra::params {
     }
 
     $thread_stack_size = $::cassandra_thread_stack_size ? {
-        undef   => 180,
+        undef   => 256,
         default => $::cassandra_thread_stack_size,
     }
 

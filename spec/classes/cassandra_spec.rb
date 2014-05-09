@@ -18,19 +18,6 @@ describe 'cassandra' do
       should contain_anchor('cassandra::begin')
     end
 
-    it 'does contain class cassandra::repo' do
-      ## Default params from cassandra::params
-      should contain_class('cassandra::repo').with({
-        :repo_name => 'datastax',
-        :baseurl   => 'http://debian.datastax.com/community',
-        :gpgkey    => 'http://debian.datastax.com/debian/repo_key',
-        :repos     => 'main',
-        :release   => 'stable',
-        :pin       => '200',
-        :gpgcheck  => 0,
-        :enabled   => 1,
-      })
-    end
 
     ## Install related resources. No dedicated spec file as it references variables
     ## from cassandra
@@ -38,18 +25,13 @@ describe 'cassandra' do
       should contain_class('cassandra::install')
     end
 
-    it 'does contain package dsc' do
-      should contain_package('dsc').with({
+    it 'does contain package cassandra' do
+      should contain_package('cassandra').with({
         :ensure => 'installed',
-        :name    => 'dsc12',
+        :name    => 'cassandra',
       })
     end
 
-    it 'does contain package python-cql' do
-      should contain_package('python-cql').with({
-        :ensure => 'installed',
-      })
-    end
 
     it 'does contain directory /etc/cassandra' do
       should contain_file('CASSANDRA-2356 /etc/cassandra').with({
@@ -76,7 +58,7 @@ describe 'cassandra' do
       should contain_exec('CASSANDRA-2356 Workaround').with({
         :command => '/etc/init.d/cassandra stop && rm -rf /var/lib/cassandra/*',
         :creates => '/etc/cassandra/CASSANDRA-2356',
-        :require => ['Package[dsc]', 'File[CASSANDRA-2356 /etc/cassandra]'],
+        :require => ['Package[cassandra]', 'File[CASSANDRA-2356 /etc/cassandra]'],
       })
     end
     ## /Finished install resources
