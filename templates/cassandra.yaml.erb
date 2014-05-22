@@ -265,7 +265,7 @@ memtable_total_space_in_mb : <%= @memtable_total_space_in_mb || 512 %>
 # segment multiple), Cassandra will flush every dirty CF in the oldest
 # segment and remove it.  So a small total commitlog space will tend
 # to cause more flush activity on less-active columnfamilies.
-# commitlog_total_space_in_mb: 4096
+commitlog_total_space_in_mb: 4096
 
 # This sets the amount of memtable flush writer threads.  These will
 # be blocked by disk io, and each one will hold a memtable in memory
@@ -474,7 +474,7 @@ multithreaded_compaction: <%= @multithreaded_compaction %>
 # 16 to 32 times the rate you are inserting data is more than sufficient.
 # Setting this to 0 disables throttling. Note that this account for all types
 # of compaction, including validation compaction.
-compaction_throughput_mb_per_sec: 16
+compaction_throughput_mb_per_sec: 999
 
 # Track cached row keys during compaction, and re-cache their new
 # positions in the compacted sstable.  Disable if you use really large
