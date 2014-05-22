@@ -40,6 +40,7 @@ class cassandra(
     $java_home                  = $cassandra::params::java_home,
     $tombstone_warn_threshold= $cassandra::params::tombstone_warn_threshold,
     $tombstone_failure_threshold= $cassandra::params::tombstone_failure_threshold,
+    $memtable_total_space_in_mb = $cassandra::params::memtable_total_space_in_mb,
 ) inherits cassandra::params {
     # Validate input parameters
 
@@ -74,6 +75,9 @@ class cassandra(
         fail('tombstone_warn_threshold must be int')
     }
     if(!is_integer($tombstone_failure_threshold)) {
+        fail('tombstone_failure_threshold must be int')
+    }
+    if(!is_integer($memtable_total_space_in_mb)) {
         fail('tombstone_failure_threshold must be int')
     }
     if(!is_integer($file_cache_size_in_mb)) {
@@ -165,6 +169,7 @@ class cassandra(
 	java_home                  => $java_home,
 	tombstone_warn_threshold=> $tombstone_warn_threshold,
 	tombstone_failure_threshold=> $tombstone_failure_threshold,
+    memtable_total_space_in_mb=>$memtable_total_space_in_mb,
     }
 
     class { 'cassandra::service':

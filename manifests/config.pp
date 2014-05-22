@@ -34,7 +34,8 @@ class cassandra::config(
     $file_cache_size_in_mb,
     $java_home,
     $tombstone_warn_threshold,
-    $tombstone_failure_threshold
+    $tombstone_failure_threshold,
+    $memtable_total_space_in_mb
 ) {
     group { 'cassandra':
         ensure  => present,

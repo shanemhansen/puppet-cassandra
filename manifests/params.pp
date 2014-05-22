@@ -66,6 +66,7 @@ class cassandra::params {
     }
     $tombstone_warn_threshold = $::tombstone_warn_threshold ? { undef => 10000, default=>$::tombstone_warn_threshold}
     $tombstone_failure_threshold = $::tombstone_failure_threshold ? { undef => 100000, default=>$::tombstone_failure_threshold}
+    $memtable_total_space_in_mb = $::memtable_total_space_in_mb ? { undef => 1024, default=>$::memtable_total_space_in_mb}
 
     $additional_jvm_opts = $::cassandra_additional_jvm_opts ? {
         undef   => [],
