@@ -35,7 +35,10 @@ class cassandra::config(
     $java_home,
     $tombstone_warn_threshold,
     $tombstone_failure_threshold,
-    $memtable_total_space_in_mb
+    $memtable_total_space_in_mb,
+    $read_request_timeout_in_ms,
+    $range_request_timeout_in_ms,
+    $request_timeout_in_ms
 ) {
     group { 'cassandra':
         ensure  => present,

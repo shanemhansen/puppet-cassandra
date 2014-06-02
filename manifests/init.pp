@@ -41,6 +41,9 @@ class cassandra(
     $tombstone_warn_threshold= $cassandra::params::tombstone_warn_threshold,
     $tombstone_failure_threshold= $cassandra::params::tombstone_failure_threshold,
     $memtable_total_space_in_mb = $cassandra::params::memtable_total_space_in_mb,
+    $read_request_timeout_in_ms = $cassandra::params::read_request_timeout_in_ms,
+    $range_request_timeout_in_ms = $cassandra::params::range_request_timeout_in_ms,
+    $request_timeout_in_ms      = $cassandra::params::request_timeout_in_ms,
 ) inherits cassandra::params {
     # Validate input parameters
 
@@ -78,8 +81,18 @@ class cassandra(
         fail('tombstone_failure_threshold must be int')
     }
     if(!is_integer($memtable_total_space_in_mb)) {
-        fail('tombstone_failure_threshold must be int')
+        fail('memtable_total_space_in_mb must be int')
     }
+    if(!is_integer($read_request_timeout_in_ms)) {
+        fail('read request timeout must be int')
+    }
+    if(!is_integer($range_request_timeout_in_ms)) {
+        fail('range request timeout must be int')
+    }
+    if(!is_integer($request_timeout_in_ms)) {
+        fail('request timeout must be int')
+    }
+    
     if(!is_integer($file_cache_size_in_mb)) {
         fail('file_cache_size must be a number, setting to 0')
     }
@@ -170,6 +183,9 @@ class cassandra(
 	tombstone_warn_threshold=> $tombstone_warn_threshold,
 	tombstone_failure_threshold=> $tombstone_failure_threshold,
     memtable_total_space_in_mb=>$memtable_total_space_in_mb,
+    read_request_timeout_in_ms => $read_request_timeout_in_ms,
+    range_request_timeout_in_ms => $range_request_timeout_in_ms,
+    request_timeout_in_ms => $request_timeout_in_ms,
     }
 
     class { 'cassandra::service':

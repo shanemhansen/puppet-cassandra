@@ -51,7 +51,18 @@ class cassandra::params {
         undef   => '',
         default => $::cassandra_heap_newsize,
     }
-
+    $read_request_timeout_in_ms = $::cassandra_read_request_timeout_in_ms ? {
+        undef => 10000,
+        default => $::cassandra_read_request_timeout_in_ms,
+    }
+    $range_request_timeout_in_ms = $::cassandra_range_request_timeout_in_ms ? {
+        undef => 10000,
+        default => $::cassandra_range_request_timeout_in_ms,
+    }
+    $request_timeout_in_ms = $::cassandra_request_timeout_in_ms ? {
+        undef => 10000,
+        default => $::cassandra_request_timeout_in_ms,
+    }
     $jmx_port = $::cassandra_jmx_port ? {
         undef   => 7199,
         default => $::cassandra_jmx_port,
